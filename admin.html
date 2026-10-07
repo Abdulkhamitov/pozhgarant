@@ -148,6 +148,13 @@
                 ).join('')}
               </select>
             </td>
+            <td>
+              <textarea 
+                onblur="saveComment('${o.id}', this.value)" 
+                placeholder="Комментарий..." 
+                style="width:100%;min-height:60px;background:#14171c;color:#fff;border:1px solid #333;border-radius:8px;padding:8px;font-family:inherit;font-size:13px;resize:vertical;"
+              >${o.adminComment || ''}</textarea>
+            </td>
           </tr>
         `;
       }).join('');
