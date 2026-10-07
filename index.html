@@ -531,11 +531,23 @@
           `📝 <b>Описание:</b> ${data.message || '—'}\n` +
           `📧 <b>Email:</b> ${data.userEmail || 'гость'}`;
 
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' })
-        });
+       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ 
+           chat_id: CHAT_ID, 
+           text, 
+           parse_mode: 'HTML',
+           disable_web_page_preview: true
+         })
+       }).then(async r => {
+         const result = await r.json();
+         if (!result.ok) {
+           console.error('Telegram error:', result);
+         } else {
+           console.log('✅ Telegram OK');
+         }
+       });
       try {
   await fetch(`https://formsubmit.co/ajax/${ADMIN_EMAIL}`, {
     method: 'POST',
