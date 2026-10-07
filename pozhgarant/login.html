@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход · ПожГарант</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: #14171c; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+    .box { background: #1f242c; padding: 44px; border-radius: 22px; width: 100%; max-width: 420px; border: 1px solid rgba(255,255,255,0.06); }
+    .logo { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 8px; }
+    .logo span { color: #e63946; }
+    h1 { font-size: 22px; text-align: center; margin-bottom: 26px; color: #fff; font-weight: 600; }
+    input { width: 100%; padding: 14px 16px; margin-bottom: 14px; border-radius: 10px; border: 1.5px solid #2a2f38; background: #14171c; color: #fff; font-size: 15px; font-family: inherit; transition: 0.2s; }
+    input:focus { outline: none; border-color: #e63946; }
+    button { width: 100%; padding: 15px; background: #e63946; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    button:hover { background: #b71c1c; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .switch { text-align: center; margin-top: 18px; font-size: 14px; color: #888; }
+    .switch a { color: #e63946; cursor: pointer; text-decoration: none; font-weight: 600; }
+    .switch a:hover { text-decoration: underline; }
+    .error { color: #ff6b6b; font-size: 14px; text-align: center; margin-bottom: 12px; min-height: 20px; }
+    .back { text-align: center; margin-top: 16px; font-size: 13px; }
+    .back a { color: #666; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="logo">Пож<span>Гарант</span></div>
+    <h1 id="formTitle">Вход в личный кабинет</h1>
+    <div class="error" id="error"></div>
+
+    <input type="email" id="email" placeholder="Email" autocomplete="email">
+    <input type="password" id="password" placeholder="Пароль" autocomplete="current-password">
+    <input type="text" id="name" placeholder="Ваше имя" style="display:none;" autocomplete="name">
+
+    <button id="submitBtn">Войти</button>
+
+    <div class="switch">
+      <span id="switchText">Нет аккаунта?</span>
+      <a id="switchLink">Зарегистрироваться</a>
+    </div>
+    <div class="back"><a href="index.html">← Вернуться на сайт</a></div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    let isLogin = true;
+
+    const errorEl = document.getElementById('error');
+    const nameInput = document.getElementById('name');
+    const submitBtn = document.getElementById('submitBtn');
+
+    document.getElementById('switchLink').addEventListener('click', () => {
+      isLogin = !isLogin;
+      document.getElementById('formTitle').textContent = isLogin ? 'Вход в личный кабинет' : 'Регистрация';
+      submitBtn.textContent = isLogin ? 'Войти' : 'Создать аккаунт';
+      nameInput.style.display = isLogin ? 'none' : 'block';
+      document.getElementById('switchText').textContent = isLogin ? 'Нет аккаунта?' : 'Уже есть аккаунт?';
+      document.getElementById('switchLink').textContent = isLogin ? 'Зарегистрироваться' : 'Войти';
+      errorEl.textContent = '';
+    });
+
+    async function handleAuth() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const name = nameInput.value.trim();
+      errorEl.textContent = '';
+
+      if (!email || !password) { errorEl.textContent = 'Заполните email и пароль'; return; }
+      if (!isLogin && !name) { errorEl.textContent = 'Введите имя'; return; }
+      if (password.length < 6) { errorEl.textContent = 'Пароль минимум 6 символов'; return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Подождите...';
+
+      try {
+        if (isLogin) {
+          await signInWithEmailAndPassword(auth, email, password);
+        } else {
+          const cred = await createUserWithEmailAndPassword(auth, email, password);
+          await setDoc(doc(db, 'users', cred.user.uid), {
+            email, name, role: 'user', createdAt: serverTimestamp()
+          });
+        }
+
+        // Проверяем роль — админ или обычный пользователь
+        const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+        const role = userDoc.exists() ? userDoc.data().role : 'user';
+        window.location.href = role === 'admin' ? 'admin.html' : 'dashboard.html';
+      } catch (e) {
+        const messages = {
+          'auth/email-already-in-use': 'Этот email уже зарегистрирован',
+          'auth/wrong-password': 'Неверный пароль',
+          'auth/invalid-credential': 'Неверный email или пароль',
+          'auth/user-not-found': 'Пользователь не найден',
+          'auth/weak-password': 'Пароль слишком простой (минимум 6 символов)',
+          'auth/invalid-email': 'Некорректный email'
+        };
+        errorEl.textContent = messages[e.code] || 'Ошибка: ' + e.message;
+        submitBtn.disabled = false;
+        submitBtn.textContent = isLogin ? 'Войти' : 'Создать аккаунт';
+      }
+    }
+
+    submitBtn.addEventListener('click', handleAuth);
+    document.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
+    });
+  </script>
+</body>
+</html>
