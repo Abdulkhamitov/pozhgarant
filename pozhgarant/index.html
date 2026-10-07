@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ПожГарант — установка пожарных гидрантов, сигнализаций и огнетушителей</title>
+  <meta name="description" content="Профессиональная установка пожарных гидрантов, пожарной сигнализации и огнетушителей. Лицензия МЧС. Гарантия 3 года. Выезд по всей России.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; color: #1a1a1a; line-height: 1.6; background: #fff; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    :root {
+      --red: #e63946; --red-dark: #b71c1c; --amber: #ffb703;
+      --graphite: #14171c; --graphite-light: #1f242c;
+      --gray: #6b7280; --gray-light: #f4f5f7;
+    }
+
+    /* ШАПКА */
+    header { background: var(--graphite); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; gap: 20px; }
+    .logo { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 38px; height: 38px; background: var(--red); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(230,57,70,0.4); }
+    .logo span { color: var(--red); }
+    .phone { font-size: 17px; font-weight: 600; color: #fff; text-decoration: none; transition: 0.2s; }
+    .phone:hover { color: var(--amber); }
+    .header-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-call { background: var(--red); color: #fff; padding: 11px 22px; border: none; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 600; transition: 0.25s; }
+    .btn-call:hover { background: var(--red-dark); }
+    .btn-login { color: #fff; text-decoration: none; font-size: 15px; font-weight: 600; padding: 10px 18px; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; transition: 0.25s; }
+    .btn-login:hover { border-color: var(--amber); color: var(--amber); }
+
+    /* ТИТУЛЬНИК */
+    .hero { position: relative; overflow: hidden; background: var(--graphite); color: #fff; padding: 100px 0 110px; }
+    .hero::before { content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 15% 25%, rgba(230,57,70,0.35), transparent 55%),
+                  radial-gradient(circle at 85% 75%, rgba(255,183,3,0.18), transparent 55%);
+      pointer-events: none; }
+    .hero-inner { position: relative; z-index: 2; max-width: 780px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 100px; font-size: 14px; margin-bottom: 24px; }
+    .hero-badge .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 0 4px rgba(34,197,94,0.2); }
+    .hero h1 { font-size: 52px; line-height: 1.1; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 22px; }
+    .hero h1 em { font-style: normal; color: var(--amber); }
+    .hero p { font-size: 19px; color: rgba(255,255,255,0.75); margin-bottom: 36px; max-width: 600px; }
+    .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary { background: var(--red); color: #fff; padding: 16px 34px; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 700; transition: 0.25s; box-shadow: 0 8px 24px rgba(230,57,70,0.35); }
+    .btn-primary:hover { background: var(--red-dark); transform: translateY(-2px); }
+    .btn-ghost { background: transparent; color: #fff; padding: 16px 34px; border: 1.5px solid rgba(255,255,255,0.25); border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 600; transition: 0.25s; }
+    .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
+    .hero-stats { display: flex; gap: 48px; margin-top: 56px; flex-wrap: wrap; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .hero-stat .num { font-size: 34px; font-weight: 800; color: #fff; }
+    .hero-stat .lbl { font-size: 14px; color: rgba(255,255,255,0.6); }
+
+    /* ЗАГОЛОВКИ */
+    section { padding: 90px 0; }
+    .section-head { text-align: center; margin-bottom: 56px; }
+    .section-tag { display: inline-block; font-size: 13px; font-weight: 700; color: var(--red); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
+    .section-title { font-size: 40px; font-weight: 800; letter-spacing: -1px; color: var(--graphite); line-height: 1.15; }
+    .section-sub { color: var(--gray); font-size: 17px; margin-top: 12px; }
+
+    /* УСЛУГИ */
+    .services { background: var(--gray-light); }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+    .service-card { background: #fff; border-radius: 20px; padding: 36px 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: 0.3s; position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.04); }
+    .service-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--red), var(--amber)); transform: scaleX(0); transform-origin: left; transition: 0.4s; }
+    .service-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+    .service-card:hover::after { transform: scaleX(1); }
+    .service-icon { width: 58px; height: 58px; border-radius: 16px; background: linear-gradient(135deg, rgba(230,57,70,0.1), rgba(255,183,3,0.1)); display: flex; align-items: center; justify-content: center; margin-bottom: 22px; color: var(--red); }
+    .service-card h3 { font-size: 21px; font-weight: 700; margin-bottom: 12px; color: var(--graphite); }
+    .service-card p { color: var(--gray); font-size: 15px; margin-bottom: 22px; }
+    .service-price { font-size: 22px; font-weight: 800; color: var(--red); padding-top: 18px; border-top: 1px solid rgba(0,0,0,0.06); }
+    .service-price small { font-size: 13px; color: var(--gray); font-weight: 500; }
+
+    /* КАЛЬКУЛЯТОР */
+    .calc { background: var(--graphite); color: #fff; position: relative; overflow: hidden; }
+    .calc::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 90% 10%, rgba(230,57,70,0.25), transparent 50%); pointer-events: none; }
+    .calc .section-title { color: #fff; }
+    .calc .section-tag { color: var(--amber); }
+    .calc-wrap { position: relative; z-index: 2; display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; background: var(--graphite-light); border-radius: 24px; padding: 44px; border: 1px solid rgba(255,255,255,0.06); }
+    .calc-block { margin-bottom: 30px; }
+    .calc-label { display: block; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 12px; }
+    .calc-options { display: flex; flex-wrap: wrap; gap: 10px; }
+    .calc-opt { background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s; }
+    .calc-opt:hover { border-color: rgba(255,255,255,0.3); }
+    .calc-opt.active { background: var(--red); border-color: var(--red); box-shadow: 0 4px 14px rgba(230,57,70,0.4); }
+    .calc-slider-wrap { display: flex; align-items: center; gap: 16px; }
+    .calc-slider { flex: 1; -webkit-appearance: none; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.15); outline: none; }
+    .calc-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--red); cursor: pointer; box-shadow: 0 0 0 6px rgba(230,57,70,0.2); }
+    .calc-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--red); cursor: pointer; border: none; }
+    .calc-value-box { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 16px; font-weight: 700; min-width: 90px; text-align: center; }
+    .calc-checks { display: flex; flex-direction: column; gap: 12px; }
+    .calc-check { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1.5px solid transparent; transition: 0.2s; }
+    .calc-check:hover { background: rgba(255,255,255,0.06); }
+    .calc-check input { width: 18px; height: 18px; accent-color: var(--red); cursor: pointer; }
+    .calc-check span { font-size: 15px; }
+    .calc-result { background: linear-gradient(160deg, #1a1e25, #14171c); border-radius: 18px; padding: 32px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; justify-content: center; text-align: center; position: sticky; top: 100px; height: fit-content; }
+    .calc-result-label { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+    .calc-result-price { font-size: 44px; font-weight: 800; color: var(--amber); letter-spacing: -1px; line-height: 1; }
+    .calc-result-price small { font-size: 18px; color: rgba(255,255,255,0.5); }
+    .calc-result-note { font-size: 13px; color: rgba(255,255,255,0.5); margin: 14px 0 24px; }
+
+    /* ПРЕИМУЩЕСТВА */
+    .adv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px; }
+    .adv-item { background: #fff; border-radius: 18px; padding: 32px 26px; border: 1px solid rgba(0,0,0,0.05); transition: 0.3s; }
+    .adv-item:hover { border-color: var(--red); transform: translateY(-4px); }
+    .adv-icon { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, var(--red), var(--red-dark)); display: flex; align-items: center; justify-content: center; color: #fff; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(230,57,70,0.25); }
+    .adv-item h4 { font-size: 17px; font-weight: 700; margin-bottom: 8px; color: var(--graphite); }
+    .adv-item p { color: var(--gray); font-size: 14px; }
+
+    /* ФОРМА */
+    .form-section { background: var(--gray-light); }
+    .form-wrap { max-width: 620px; margin: 0 auto; background: #fff; border-radius: 24px; padding: 44px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
+    .form-group { margin-bottom: 18px; }
+    .form-group input, .form-group textarea { width: 100%; padding: 15px 18px; border: 1.5px solid #e5e7eb; border-radius: 12px; background: #fff; color: var(--graphite); font-size: 16px; font-family: inherit; transition: 0.2s; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 4px rgba(230,57,70,0.1); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .btn-submit { width: 100%; background: var(--red); color: #fff; padding: 17px; border: none; border-radius: 12px; cursor: pointer; font-size: 17px; font-weight: 700; transition: 0.25s; box-shadow: 0 8px 24px rgba(230,57,70,0.3); }
+    .btn-submit:hover { background: var(--red-dark); transform: translateY(-2px); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .form-note { font-size: 13px; color: var(--gray); text-align: center; margin-top: 16px; }
+    .form-note a { color: var(--red); }
+
+    /* ПОДВАЛ */
+    footer { background: var(--graphite); color: rgba(255,255,255,0.6); padding: 50px 0 30px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 32px; }
+    .footer-col h5 { color: #fff; font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+    .footer-col a, .footer-col p { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 14px; display: block; margin-bottom: 10px; transition: 0.2s; }
+    .footer-col a:hover { color: var(--amber); }
+    .footer-bottom { padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 13px; text-align: center; }
+
+    /* АДАПТИВ */
+    @media (max-width: 900px) {
+      .calc-wrap { grid-template-columns: 1fr; padding: 28px; }
+      .calc-result { position: static; }
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; letter-spacing: -0.5px; }
+      .hero p { font-size: 16px; }
+      .hero { padding: 70px 0 80px; }
+      .section-title { font-size: 28px; }
+      section { padding: 60px 0; }
+      .header-inner { flex-wrap: wrap; gap: 12px; }
+      .phone { order: 3; width: 100%; text-align: center; }
+      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+      .hero-stats { gap: 28px; }
+      .hero-stat .num { font-size: 26px; }
+      .form-wrap { padding: 28px; }
+      .calc-result-price { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ШАПКА -->
+  <header>
+    <div class="container header-inner">
+      <div class="logo">
+        <div class="logo-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-4 4-8 4-8z"/>
+            <path d="M12 22a6 6 0 0 0 6-6c0-2-1-3-1-3"/>
+          </svg>
+        </div>
+        Пож<span>Гарант</span>
+      </div>
+      <a href="tel:+78001234567" class="phone">+7 (800) 123-45-67</a>
+      <div class="header-actions">
+        <a href="login.html" class="btn-login" id="authBtn">Войти</a>
+        <button class="btn-call" onclick="scrollToOrder()">Заказать звонок</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ТИТУЛЬНИК -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Работаем по всей России · Лицензия МЧС
+      </div>
+      <h1>Пожарная безопасность <em>под ключ</em> для вашего объекта</h1>
+      <p>Установка гидрантов, сигнализации и огнетушителей. Проектируем, монтируем, обслуживаем. Гарантия 3 года.</p>
+      <div class="hero-buttons">
+        <button class="btn-primary" onclick="scrollToOrder()">Оставить заявку</button>
+        <button class="btn-ghost" onclick="document.getElementById('calc').scrollIntoView({behavior:'smooth'})">Рассчитать стоимость</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num">12+</div><div class="lbl">лет на рынке</div></div>
+        <div class="hero-stat"><div class="num">850+</div><div class="lbl">объектов сдано</div></div>
+        <div class="hero-stat"><div class="num">24 ч</div><div class="lbl">выезд на объект</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- УСЛУГИ -->
+  <section class="services">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag">Услуги</div>
+        <h2 class="section-title">Что мы делаем</h2>
+        <p class="section-sub">Полный цикл работ — от проекта до сдачи объекта инспектору МЧС</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v6"/><path d="M5 12h14"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/><circle cx="12" cy="17" r="2"/>
+            </svg>
+          </div>
+          <h3>Пожарные гидранты</h3>
+          <p>Установка, обслуживание и проверка гидрантов на объектах любой сложности. Соответствие ГОСТ и требованиям МЧС.</p>
+          <div class="service-price">от 15 000 ₽ <small>/ шт</small></div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 3 7h8c1-2 3-4 3-7a7 7 0 0 0-7-7z"/>
+              <path d="M9 16v3a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-3"/>
+            </svg>
+          </div>
+          <h3>Пожарная сигнализация</h3>
+          <p>Проектирование и монтаж АПС под ключ. Датчики дыма, тепла, звуковое оповещение. Для офисов, складов, магазинов.</p>
+          <div class="service-price">от 25 000 ₽ <small>/ объект</small></div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="9" width="12" height="12" rx="2"/>
+              <path d="M9 9V6a3 3 0 0 1 6 0v3"/>
+              <path d="M10 14h4"/>
+            </svg>
+          </div>
+          <h3>Огнетушители</h3>
+          <p>Продажа, установка и перезарядка огнетушителей. Подбор под тип помещения. Оформление журнала учета.</p>
+          <div class="service-price">от 1 500 ₽ <small>/ шт</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- КАЛЬКУЛЯТОР -->
+  <section class="calc" id="calc">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag">Калькулятор</div>
+        <h2 class="section-title">Рассчитайте стоимость за 30 секунд</h2>
+        <p class="section-sub" style="color: rgba(255,255,255,0.6);">Точная цена — после осмотра. Здесь — предварительная оценка.</p>
+      </div>
+      <div class="calc-wrap">
+        <div>
+          <div class="calc-block">
+            <label class="calc-label">1. Тип объекта</label>
+            <div class="calc-options" id="objType">
+              <div class="calc-opt active" data-k="1">Офис</div>
+              <div class="calc-opt" data-k="1.2">Магазин</div>
+              <div class="calc-opt" data-k="1.4">Склад</div>
+              <div class="calc-opt" data-k="1.6">Производство</div>
+              <div class="calc-opt" data-k="1.1">Жилой дом</div>
+            </div>
+          </div>
+          <div class="calc-block">
+            <label class="calc-label">2. Площадь помещения</label>
+            <div class="calc-slider-wrap">
+              <input type="range" class="calc-slider" id="area" min="20" max="2000" step="10" value="200">
+              <div class="calc-value-box"><span id="areaVal">200</span> м²</div>
+            </div>
+          </div>
+          <div class="calc-block">
+            <label class="calc-label">3. Что нужно установить</label>
+            <div class="calc-checks">
+              <label class="calc-check"><input type="checkbox" id="srvFire" checked><span>Пожарная сигнализация</span></label>
+              <label class="calc-check"><input type="checkbox" id="srvHydrant"><span>Пожарные гидранты (за шт.)</span></label>
+              <label class="calc-check"><input type="checkbox" id="srvExt"><span>Огнетушители (за шт.)</span></label>
+            </div>
+          </div>
+          <div class="calc-block" id="hydrantBlock" style="display:none;">
+            <label class="calc-label">Количество гидрантов</label>
+            <div class="calc-slider-wrap">
+              <input type="range" class="calc-slider" id="hydrantCount" min="1" max="20" value="2">
+              <div class="calc-value-box"><span id="hydrantVal">2</span> шт</div>
+            </div>
+          </div>
+          <div class="calc-block" id="extBlock" style="display:none;">
+            <label class="calc-label">Количество огнетушителей</label>
+            <div class="calc-slider-wrap">
+              <input type="range" class="calc-slider" id="extCount" min="1" max="50" value="5">
+              <div class="calc-value-box"><span id="extVal">5</span> шт</div>
+            </div>
+          </div>
+        </div>
+        <div class="calc-result">
+          <div class="calc-result-label">Предварительная стоимость</div>
+          <div class="calc-result-price"><span id="totalPrice">0</span> <small>₽</small></div>
+          <div class="calc-result-note">Итоговая цена может отличаться после осмотра объекта</div>
+          <button class="btn-primary" style="width:100%;" onclick="applyCalcToForm()">Получить точную смету</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ПРЕИМУЩЕСТВА -->
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag">Преимущества</div>
+        <h2 class="section-title">Почему выбирают нас</h2>
+      </div>
+      <div class="adv-grid">
+        <div class="adv-item">
+          <div class="adv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></div>
+          <h4>Лицензия МЧС</h4>
+          <p>Все работы официально, с гарантией и полным пакетом документов.</p>
+        </div>
+        <div class="adv-item">
+          <div class="adv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <h4>Выезд за 24 часа</h4>
+          <p>Приедем на объект в течение суток после заявки в любом регионе.</p>
+        </div>
+        <div class="adv-item">
+          <div class="adv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <h4>Честные цены</h4>
+          <p>Фиксированная смета без скрытых доплат. Работаем по договору.</p>
+        </div>
+        <div class="adv-item">
+          <div class="adv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h4>Гарантия 3 года</h4>
+          <p>Бесплатное обслуживание и консультации после установки.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ФОРМА -->
+  <section class="form-section" id="order">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag">Заявка</div>
+        <h2 class="section-title">Оставьте заявку</h2>
+        <p class="section-sub">Перезвоним в течение 15 минут и уточним детали</p>
+      </div>
+      <div class="form-wrap">
+        <form id="leadForm">
+          <div class="form-group"><input type="text" name="name" placeholder="Ваше имя" required></div>
+          <div class="form-group"><input type="tel" name="phone" placeholder="Телефон" required></div>
+          <div class="form-group">
+            <select name="serviceType" style="width:100%;padding:15px 18px;border:1.5px solid #e5e7eb;border-radius:12px;font-size:16px;font-family:inherit;background:#fff;">
+              <option value="Пожарные гидранты">Пожарные гидранты</option>
+              <option value="Пожарная сигнализация" selected>Пожарная сигнализация</option>
+              <option value="Огнетушители">Огнетушители</option>
+              <option value="Комплексная услуга">Комплексная услуга</option>
+            </select>
+          </div>
+          <div class="form-group"><textarea name="message" rows="4" placeholder="Опишите задачу (например: нужно установить сигнализацию в офисе 200 кв.м)"></textarea></div>
+          <button type="submit" class="btn-submit">Отправить заявку</button>
+          <p class="form-note">Нажимая кнопку, вы соглашаетесь с <a href="privacy.html" target="_blank">политикой обработки персональных данных</a></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ПОДВАЛ -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="logo" style="margin-bottom:16px;"><div class="logo-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-4 4-8 4-8z"/><path d="M12 22a6 6 0 0 0 6-6c0-2-1-3-1-3"/></svg></div>Пож<span>Гарант</span></div>
+          <p>Профессиональная установка и обслуживание систем пожарной безопасности с 2014 года.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Услуги</h5>
+          <a href="#calc">Пожарные гидранты</a>
+          <a href="#calc">Пожарная сигнализация</a>
+          <a href="#calc">Огнетушители</a>
+        </div>
+        <div class="footer-col">
+          <h5>Контакты</h5>
+          <a href="tel:+79292961561">+7 (929) 296-15-61</a>
+          <a href="mailto:info@pozhgarant.ru">info@pozhgarant.ru</a>
+          <a href="privacy.html">Политика конфиденциальности</a>
+          <a href="login.html">Личный кабинет</a>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 ПожГарант. Все права защищены. ИНН 000000000000</div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // ===== TELEGRAM (вставьте свои значения) =====
+    const BOT_TOKEN = '8903147540:AAGy4tTFCbYTpWjmQL0KExDYEr0qFmhu8DE';
+    const CHAT_ID = '5562843920';
+    // =============================================
+
+    // Кнопка "Войти" меняется на "Кабинет", если пользователь авторизован
+    onAuthStateChanged(auth, (user) => {
+      const btn = document.getElementById('authBtn');
+      if (user) {
+        btn.textContent = 'Личный кабинет';
+        btn.href = 'dashboard.html';
+      }
+    });
+
+    window.scrollToOrder = () => document.getElementById('order').scrollIntoView({behavior:'smooth'});
+
+    // ===== КАЛЬКУЛЯТОР =====
+    const state = {
+      objK: 1,
+      area: 200,
+      fire: true,
+      hydrant: false,
+      ext: false,
+      hydrantCount: 2,
+      extCount: 5
+    };
+
+    // Цены (₽)
+    const PRICES = {
+      firePerM2: 150,       // сигнализация за м²
+      hydrantUnit: 15000,   // 1 гидрант
+      extUnit: 1500         // 1 огнетушитель
+    };
+
+    function calcTotal() {
+      let total = 0;
+      if (state.fire) total += state.area * PRICES.firePerM2 * state.objK;
+      if (state.hydrant) total += state.hydrantCount * PRICES.hydrantUnit;
+      if (state.ext) total += state.extCount * PRICES.extUnit;
+      return Math.round(total);
+    }
+
+    function updateCalc() {
+      document.getElementById('totalPrice').textContent = calcTotal().toLocaleString('ru-RU');
+    }
+
+    // Тип объекта
+    document.querySelectorAll('#objType .calc-opt').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('#objType .calc-opt').forEach(x => x.classList.remove('active'));
+        el.classList.add('active');
+        state.objK = parseFloat(el.dataset.k);
+        updateCalc();
+      });
+    });
+
+    // Площадь
+    const areaInput = document.getElementById('area');
+    areaInput.addEventListener('input', () => {
+      state.area = parseInt(areaInput.value);
+      document.getElementById('areaVal').textContent = state.area;
+      updateCalc();
+    });
+
+    // Сервисы
+    document.getElementById('srvFire').addEventListener('change', e => {
+      state.fire = e.target.checked; updateCalc();
+    });
+    document.getElementById('srvHydrant').addEventListener('change', e => {
+      state.hydrant = e.target.checked;
+      document.getElementById('hydrantBlock').style.display = e.target.checked ? 'block' : 'none';
+      updateCalc();
+    });
+    document.getElementById('srvExt').addEventListener('change', e => {
+      state.ext = e.target.checked;
+      document.getElementById('extBlock').style.display = e.target.checked ? 'block' : 'none';
+      updateCalc();
+    });
+
+    // Кол-во гидрантов / огнетушителей
+    document.getElementById('hydrantCount').addEventListener('input', e => {
+      state.hydrantCount = parseInt(e.target.value);
+      document.getElementById('hydrantVal').textContent = state.hydrantCount;
+      updateCalc();
+    });
+    document.getElementById('extCount').addEventListener('input', e => {
+      state.extCount = parseInt(e.target.value);
+      document.getElementById('extVal').textContent = state.extCount;
+      updateCalc();
+    });
+
+    // Инициализация
+    updateCalc();
+
+    // Кнопка "Получить точную смету" — прокрутка к форме
+    window.applyCalcToForm = () => {
+      scrollToOrder();
+      const ta = document.querySelector('textarea[name="message"]');
+      if (ta) {
+        ta.value = `Расчёт из калькулятора:\n` +
+          `• Площадь: ${state.area} м²\n` +
+          `• Сигнализация: ${state.fire ? 'да' : 'нет'}\n` +
+          `• Гидранты: ${state.hydrant ? state.hydrantCount + ' шт' : 'нет'}\n` +
+          `• Огнетушители: ${state.ext ? state.extCount + ' шт' : 'нет'}\n` +
+          `• Предварительная стоимость: ${calcTotal().toLocaleString('ru-RU')} ₽`;
+      }
+    };
+
+    // ===== ОТПРАВКА ФОРМЫ =====
+    document.getElementById('leadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = form.querySelector('.btn-submit');
+      const originalText = btn.textContent;
+      btn.textContent = 'Отправка...';
+      btn.disabled = true;
+
+      const data = {
+        name: form.name.value.trim(),
+        phone: form.phone.value.trim(),
+        serviceType: form.serviceType.value,
+        message: form.message.value.trim(),
+        userId: auth.currentUser ? auth.currentUser.uid : null,
+        userEmail: auth.currentUser ? auth.currentUser.email : null,
+        status: 'new',
+        createdAt: serverTimestamp()
+      };
+
+      try {
+        // 1. Сохраняем в Firestore
+        await addDoc(collection(db, 'orders'), data);
+
+        // 2. Дублируем в Telegram
+        const text =
+          `🔥 <b>Новая заявка с сайта</b>\n\n` +
+          `👤 <b>Имя:</b> ${data.name}\n` +
+          `📞 <b>Телефон:</b> ${data.phone}\n` +
+          `🛠 <b>Услуга:</b> ${data.serviceType}\n` +
+          `📝 <b>Описание:</b> ${data.message || '—'}\n` +
+          `📧 <b>Email:</b> ${data.userEmail || 'гость'}`;
+
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' })
+        });
+
+        form.innerHTML = '<h3 style="text-align:center;color:#22c55e;padding:20px 0;">✅ Заявка отправлена!<br><span style="font-size:15px;color:#666;font-weight:400;">Мы свяжемся с вами в течение 15 минут.</span></h3>';
+      } catch (err) {
+        console.error(err);
+        alert('Не удалось отправить заявку. Позвоните нам: +7 (800) 123-45-67');
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
