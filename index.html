@@ -539,6 +539,25 @@ await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
   body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' })
 });
 */
+        // Email-уведомление через FormSubmit
+try {
+  await fetch(`https://formsubmit.co/ajax/${ADMIN_EMAIL}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      _subject: `🔥 Новая заявка: ${data.serviceType}`,
+      _template: 'table',
+      Имя: data.name,
+      Телефон: data.phone,
+      Услуга: data.serviceType,
+      Описание: data.message || '—',
+      'Email клиента': data.userEmail || 'гость',
+      Время: new Date().toLocaleString('ru-RU')
+    })
+  });
+} catch (e) {
+  console.warn('Email не отправлен:', e);
+}
       try {
   await fetch(`https://formsubmit.co/ajax/${ADMIN_EMAIL}`, {
     method: 'POST',
