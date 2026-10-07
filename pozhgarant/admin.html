@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Админ-панель · ПожГарант</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: #14171c; color: #fff; min-height: 100vh; }
+    header { padding: 18px 28px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    header .logo { font-weight: 800; font-size: 18px; }
+    header .logo span { color: #e63946; }
+    .user-info { display: flex; gap: 14px; align-items: center; font-size: 13px; color: #888; }
+    .logout { background: #e63946; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
+    .container { max-width: 1200px; margin: 30px auto; padding: 0 24px; }
+    h1 { font-size: 24px; margin-bottom: 8px; }
+    .subtitle { color: #888; margin-bottom: 28px; font-size: 14px; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .stat { background: #1f242c; padding: 20px; border-radius: 14px; border: 1px solid #2a2f38; }
+    .stat-num { font-size: 30px; font-weight: 800; color: #ffb703; }
+    .stat-lbl { font-size: 13px; color: #888; margin-top: 4px; }
+    .filters { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+    .filter-btn { background: #1f242c; color: #ccc; border: 1px solid #2a2f38; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+    .filter-btn:hover { border-color: #444; }
+    .filter-btn.active { background: #e63946; border-color: #e63946; color: #fff; }
+    table { width: 100%; border-collapse: collapse; background: #1f242c; border-radius: 14px; overflow: hidden; font-size: 14px; }
+    th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #2a2f38; vertical-align: top; }
+    th { background: #181c22; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+    tr:last-child td { border-bottom: none; }
+    select { background: #14171c; color: #fff; border: 1px solid #333; padding: 6px 10px; border-radius: 8px; font-family: inherit; cursor: pointer; font-size: 13px; }
+    select:focus { outline: none; border-color: #e63946; }
+    .desc { color: #aaa; font-size: 13px; max-width: 300px; white-space: pre-line; }
+    .access-denied { text-align: center; padding: 100px 20px; }
+    .access-denied h1 { color: #e63946; font-size: 32px; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Пож<span>Гарант</span> · Админ-панель</div>
+    <div class="user-info">
+      <span id="adminEmail"></span>
+      <button class="logout" id="logoutBtn">Выйти</button>
+    </div>
+  </header>
+
+  <div class="container" id="main">
+    <h1>Все заявки</h1>
+    <p class="subtitle">Управление статусами и просмотр обращений с сайта</p>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="statAll">0</div><div class="stat-lbl">Всего заявок</div></div>
+      <div class="stat"><div class="stat-num" id="statNew">0</div><div class="stat-lbl">Новых</div></div>
+      <div class="stat"><div class="stat-num" id="statProgress">0</div><div class="stat-lbl">В работе</div></div>
+      <div class="stat"><div class="stat-num" id="statDone">0</div><div class="stat-lbl">Выполнено</div></div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">Все</button>
+      <button class="filter-btn" data-filter="new">Новые</button>
+      <button class="filter-btn" data-filter="in_progress">В работе</button>
+      <button class="filter-btn" data-filter="done">Выполненные</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Клиент</th>
+          <th>Телефон</th>
+          <th>Услуга</th>
+          <th>Описание</th>
+          <th>Статус</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const statusLabels = { new: 'Новая', in_progress: 'В работе', done: 'Выполнена' };
+    let allOrders = [];
+    let currentFilter = 'all';
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      signOut(auth).then(() => window.location.href = 'index.html');
+    });
+
+    // Смена статуса
+    window.changeStatus = async (orderId, newStatus) => {
+      try {
+        await updateDoc(doc(db, 'orders', orderId), {
+          status: newStatus,
+          updatedAt: serverTimestamp()
+        });
+        const o = allOrders.find(x => x.id === orderId);
+        if (o) o.status = newStatus;
+        renderStats();
+        renderTable();
+      } catch (e) {
+        alert('Ошибка при обновлении статуса: ' + e.message);
+      }
+    };
+
+    // Фильтры
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderTable();
+      });
+    });
+
+    function renderStats() {
+      document.getElementById('statAll').textContent = allOrders.length;
+      document.getElementById('statNew').textContent = allOrders.filter(o => o.status === 'new').length;
+      document.getElementById('statProgress').textContent = allOrders.filter(o => o.status === 'in_progress').length;
+      document.getElementById('statDone').textContent = allOrders.filter(o => o.status === 'done').length;
+    }
+
+    function renderTable() {
+      const filtered = currentFilter === 'all' ? allOrders : allOrders.filter(o => o.status === currentFilter);
+      const rows = document.getElementById('rows');
+
+      if (filtered.length === 0) {
+        rows.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#666;">Заявок нет</td></tr>';
+        return;
+      }
+
+      rows.innerHTML = filtered.map(o => {
+        const date = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleString('ru-RU') : '—';
+        return `
+          <tr>
+            <td>${date}</td>
+            <td>${o.name || '—'}</td>
+            <td><a href="tel:${o.phone}" style="color:#ffb703;text-decoration:none;">${o.phone || '—'}</a></td>
+            <td>${o.serviceType || '—'}</td>
+            <td class="desc">${o.message || '—'}</td>
+            <td>
+              <select onchange="changeStatus('${o.id}', this.value)">
+                ${Object.entries(statusLabels).map(([k, v]) =>
+                  `<option value="${k}" ${o.status === k ? 'selected' : ''}>${v}</option>`
+                ).join('')}
+              </select>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.href = 'login.html'; return; }
+
+      // Проверка роли админа
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (!userDoc.exists() || userDoc.data().role !== 'admin') {
+        document.body.innerHTML = '<div class="access-denied"><h1>Доступ запрещён</h1><p style="color:#888;margin-bottom:20px;">У вас нет прав администратора</p><a href="index.html" style="color:#e63946;">← На главную</a></div>';
+        return;
+      }
+
+      document.getElementById('adminEmail').textContent = userDoc.data().name || user.email;
+
+      // Загружаем все заявки
+      const snap = await getDocs(collection(db, 'orders'));
+      allOrders = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+      renderStats();
+      renderTable();
+    });
+  </script>
+</body>
+</html>
