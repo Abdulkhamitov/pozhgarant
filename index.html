@@ -522,10 +522,9 @@
         // 1. Сохраняем в Firestore
         await addDoc(collection(db, 'orders'), data);
 
-        // ============ ДИАГНОСТИКА TELEGRAM ============
-console.log('🔍 BOT_TOKEN:', BOT_TOKEN ? BOT_TOKEN.slice(0, 15) + '...' : '❌ ПУСТОЙ!');
-console.log('🔍 CHAT_ID:', CHAT_ID);
-
+        // 2. Telegram временно отключён — api.telegram.org блокируется в РФ
+// Работает только через сервер-посредник (см. Firebase Functions в будущем)
+/*
 const text =
   `🔥 <b>Новая заявка с сайта</b>\n\n` +
   `👤 <b>Имя:</b> ${data.name}\n` +
@@ -534,37 +533,12 @@ const text =
   `📝 <b>Описание:</b> ${data.message || '—'}\n` +
   `📧 <b>Email:</b> ${data.userEmail || 'гость'}`;
 
-// 1. Проверяем токен бота
-try {
-  const r1 = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getMe`);
-  const j1 = await r1.json();
-  console.log('🔍 Проверка токена:', j1.ok ? '✅ OK — бот ' + j1.result.username : '❌ ' + j1.description);
-} catch (e) {
-  console.error('❌ Токен не работает:', e);
-}
-
-// 2. Проверяем chat_id
-try {
-  const r2 = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChat?chat_id=${CHAT_ID}`);
-  const j2 = await r2.json();
-  console.log('🔍 Проверка CHAT_ID:', j2.ok ? '✅ OK — ' + j2.result.title : '❌ ' + j2.description);
-} catch (e) {
-  console.error('❌ CHAT_ID не работает:', e);
-}
-
-// 3. Отправляем сообщение
-try {
-  const r3 = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' })
-  });
-  const j3 = await r3.json();
-  console.log('🔍 Отправка:', j3.ok ? '✅ OK' : '❌ ' + j3.description);
-} catch (e) {
-  console.error('❌ Отправка не удалась:', e);
-}
-// ================================================
+await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' })
+});
+*/
       try {
   await fetch(`https://formsubmit.co/ajax/${ADMIN_EMAIL}`, {
     method: 'POST',
