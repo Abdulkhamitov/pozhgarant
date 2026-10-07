@@ -88,7 +88,12 @@
             <div>
               <div class="order-title">${o.serviceType || 'Заявка'}</div>
               <div class="order-desc">${o.message || 'Без описания'}</div>
-              <div class="order-date">${date}</div>
+              ${o.adminComment ? `
+              <div style="margin-top:12px;padding:12px 14px;background:#fef9e7;border-left:3px solid #f59e0b;border-radius:6px;font-size:14px;color:#78350f;">
+                <strong>💬 Комментарий специалиста:</strong><br>${o.adminComment}
+              </div>
+            ` : ''}
+            <div class="order-date">${date}</div>
             </div>
             <div class="status status-${o.status}">${statusLabels[o.status] || o.status}</div>
           </div>
