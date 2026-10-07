@@ -485,24 +485,7 @@
     };
 
     // ===== ОТПРАВКА ФОРМЫ =====
-    document.getElementById('leadForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const btn = form.querySelector('.btn-submit');
-      const originalText = btn.textContent;
-      btn.textContent = 'Отправка...';
-      btn.disabled = true;
-
-      const data = {
-        name: form.name.value.trim(),
-        phone: form.phone.value.trim(),
-        serviceType: form.serviceType.value,
-        message: form.message.value.trim(),
-        userId: auth.currentUser ? auth.currentUser.uid : null,
-        userEmail: auth.currentUser ? auth.currentUser.email : null,
-        status: 'new',
-        createdAt: serverTimestamp()
-      };
+    
 
       try {
         // 1. Сохраняем в Firestore
