@@ -110,6 +110,27 @@
     }
 
     submitBtn.addEventListener('click', handleAuth);
+    // Восстановление пароля
+    document.getElementById('forgotLink').addEventListener('click', async () => {
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+      errorEl.textContent = 'Введите email — на него придёт ссылка для сброса';
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      errorEl.style.color = '#22c55e';
+      errorEl.textContent = '✅ Письмо со ссылкой для сброса отправлено на ' + email;
+    } catch (e) {
+      errorEl.style.color = '#ff6b6b';
+      const messages = {
+        'auth/user-not-found': 'Пользователь с таким email не найден',
+        'auth/invalid-email': 'Некорректный email'
+      };
+      errorEl.textContent = messages[e.code] || 'Ошибка: ' + e.message;
+    }
+  });
     document.querySelectorAll('input').forEach(inp => {
       inp.addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
     });
