@@ -106,6 +106,21 @@
       }
     };
 
+    // Сохранение комментария админа
+    window.saveComment = async (orderId, comment) => {
+      try {
+        await updateDoc(doc(db, 'orders', orderId), {
+          adminComment: comment.trim(),
+          updatedAt: serverTimestamp()
+        });
+        // Обновляем локальный кэш
+        const o = allOrders.find(x => x.id === orderId);
+        if (o) o.adminComment = comment.trim();
+      } catch (e) {
+        alert('Ошибка сохранения комментария: ' + e.message);
+      }
+    };
+    
     // Фильтры
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
